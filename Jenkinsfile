@@ -16,9 +16,7 @@ pipeline {
         stage('Build Maven') {
             steps {
                 // Dùng Docker container Maven với JDK 17 để build
-                sh '''
-                    docker run --rm -v $PWD:/app -w /app maven:3.8.5-openjdk-17 mvn clean package -DskipTests
-                '''
+                sh 'mvn clean package -DskipTests'
             }
         }
 
