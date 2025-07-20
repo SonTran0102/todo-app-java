@@ -13,13 +13,6 @@ pipeline {
             }
         }
 
-        stage('Build Maven') {
-            steps {
-                // Dùng Docker container Maven với JDK 17 để build
-                sh 'mvn clean package -DskipTests'
-            }
-        }
-
         stage('Build Docker Image') {
             steps {
                 sh 'docker build -t $DOCKER_IMAGE:$DOCKER_TAG .'
