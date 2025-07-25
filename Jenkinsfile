@@ -9,6 +9,7 @@ pipeline {
     stages {
         stage('Checkout') {
             steps {
+                echo "hello"
                 git branch: 'main', url: 'https://github.com/SonTran0102/todo-app-java.git'
             }
         }
