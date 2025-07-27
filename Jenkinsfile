@@ -4,6 +4,8 @@ pipeline {
     environment {
         DOCKER_IMAGE = 'sontran0102/test_docker_repo'
         DOCKER_TAG = 'latest'
+        CONTAINER_NAME = 'todo-app'
+        APP_PORT = '8081'
     }
 
     stages {
@@ -37,14 +39,29 @@ pipeline {
                 sh 'docker push $DOCKER_IMAGE:$DOCKER_TAG'
             }
         }
+
+        stage('Deploy and Run App') {
+            agent { label 'ubuntu-slave' }
+
+            steps {
+                script {
+                    echo "Deploying container on slave..."
+                    sh """
+                        docker rm -f $CONTAINER_NAME || true
+                        docker pull $DOCKER_IMAGE:$DOCKER_TAG
+                        docker run -d --name $CONTAINER_NAME -p $APP_PORT:$APP_PORT $DOCKER_IMAGE:$DOCKER_TAG
+                    """
+                }
+            }
+        }
     }
 
     post {
         success {
-            echo 'Docker image pushed to Docker Hub!'
+            echo 'Docker image built, pushed, and deployed successfully!'
         }
         failure {
-            echo 'Failed to push image. Check logs.'
+            echo 'Failed. Check the logs for details.'
         }
     }
 }
